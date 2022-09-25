@@ -18,6 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 require('./app/index');// connect to OUR database
 require('./app/routes/spotify.routes.js')(app); // spotify auth/login
+// require('./app/routes/users.routes.js')(app); // spotify auth/login
+// require('./app/routes/songRequest.routes.js')(app); // spotify auth/login
+require('./app/routes/gig.routes.js')(app); // spotify auth/login
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT, () => {
