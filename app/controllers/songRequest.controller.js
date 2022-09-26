@@ -221,33 +221,33 @@ exports.updateRequests = (req, res) => {
     //         }
     //     })
     // }
+}
+exports.deleteRequest = (req, res) => {
 
-    exports.deleteRequest = (req, res) => {
+    let { id } = req.params;
 
-        let { id } = req.params;
-
-        let script = `
+    let script = `
         DELETE FROM next_song.song_requests
         WHERE (id = ?)
     `
 
-        db.query(script, [id], (err, results) => {
-            if (err) {
-                res.status(500).send({
-                    message: 'There was an error deleting your maximum',
-                    err
-                })
-                return;
-            } else if (results.length == 0) {
-                res.status(404).send({
-                    message: 'No exercises to delete found'
-                })
-                return;
-            } else {
-                res.send({
-                    message: "Excercise deleted successfully"
-                })
-                return;
-            }
-        })
-    }
+    db.query(script, [id], (err, results) => {
+        if (err) {
+            res.status(500).send({
+                message: 'There was an error deleting your maximum',
+                err
+            })
+            return;
+        } else if (results.length == 0) {
+            res.status(404).send({
+                message: 'No exercises to delete found'
+            })
+            return;
+        } else {
+            res.send({
+                message: "Excercise deleted successfully"
+            })
+            return;
+        }
+    })
+}

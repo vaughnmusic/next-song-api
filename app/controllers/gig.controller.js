@@ -3,42 +3,59 @@ const db = require('../index');
 // file needs to be updated to work for this application
 
 exports.getShows = (req, res) => {
-    res.send("not implemented")
-    // var { userId, songId, gigId } = req.body;
 
-    // if ((typeof userId !== 'string')
-    //     || (typeof songId !== 'string')
-    //     || (typeof gigId !== 'string')) {
-    //     res.status(400).send({
-    //         message: "You are missing required data",
-    //         body: req.body
-    //     })
-    //     return;
-    // }
+    const query = `
+        SELECT * FROM gigs;
+    `;
 
-    // const script = `
-    //     INSERT INTO next_song.song_requests
-    //         (user_id, song_id, gig_id)
-    //     VALUES
-    //         (?, ?, ?);
-    // `
+    db.query(query, (err, results) => {
 
-    // let pValues = [userId, songId, gigId]
+        if (err) {
+            res.status(500).send({
+                error: err,
+                message: "There was a problem getting gigs"
+            });
+            return;
+        } else if (results.length == 0) {
+            res.status(404).send({
+                message: "No gigs found :("
+            });
+            return;
+        } else {
+            res.send(results);
+        }
+    });
+}
 
-    // db.query(script, pValues, (err, results) => {
-    //     if (err) {
-    //         res.status(500).send({
-    //             message: 'There was a problem saving your ORM',
-    //             err
-    //         })
-    //         return;
-    //     } else {
-    //         res.send({
-    //             message: 'Your one rep max was saved in the database'
-    //         })
-    //         return;
-    //     }
-    // })
+exports.getGigById = (req, res) => {
+
+    let { gigId } = req.params;
+
+    const query = `
+        SELECT * FROM gigs
+        WHERE id = ?;
+    `;
+
+    let pValues = [gigId];
+
+
+    db.query(query, pValues, (err, results) => {
+
+        if (err) {
+            res.status(500).send({
+                error: err,
+                message: "There was a problem getting gigs"
+            });
+            return;
+        } else if (results.length == 0) {
+            res.status(404).send({
+                message: "No gigs found :("
+            });
+            return;
+        } else {
+            res.send(results[0]);
+        }
+    });
 }
 
 
