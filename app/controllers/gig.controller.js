@@ -13,7 +13,7 @@ exports.getShows = (req, res) => {
         if (err) {
             res.status(500).send({
                 error: err,
-                message: "There was a problem getting gigs"
+                message: "There was a problem finding gigs"
             });
             return;
         } else if (results.length == 0) {

@@ -1,13 +1,13 @@
 const db = require('../index');
+const { v4: uuid } = require('uuid');
 
 // file needs to be updated to work for this application
 
 exports.createNewRequest = (req, res) => {
 
-    var { userId, songId, gigId } = req.body;
+    var { songId, gigId } = req.body;
 
-    if ((typeof userId !== 'string')
-        || (typeof songId !== 'string')
+    if ((typeof songId !== 'string')
         || (typeof gigId !== 'string')) {
         res.status(400).send({
             message: "You are missing required data",
@@ -18,23 +18,23 @@ exports.createNewRequest = (req, res) => {
 
     const script = `
         INSERT INTO next_song.song_requests
-            (user_id, song_id, gig_id)
+            (id, song_id, gig_id)
         VALUES
             (?, ?, ?);
     `
 
-    let pValues = [userId, songId, gigId]
+    let pValues = [uuid(), songId, gigId]
 
     db.query(script, pValues, (err, results) => {
         if (err) {
             res.status(500).send({
-                message: 'There was a problem saving your ORM',
+                message: 'There was a problem saving your song request.',
                 err
             })
             return;
         } else {
             res.send({
-                message: 'Your one rep max was saved in the database'
+                message: 'Your song request was saved in the database.'
             })
             return;
         }
@@ -58,13 +58,13 @@ exports.getPerformersFullCatalogue = (req, res) => {
     db.query(script, [userId], (err, results) => {
         if (err) {
             res.status(500).send({
-                message: 'There was an error getting the on rep maximums',
+                message: 'There was an error submitting the request',
                 err
             })
             return;
         } else if (results.length == 0) {
             res.status(404).send(
-                'There are no saved lifts'
+                'There are no saved requests'
             )
             return;
         } else {
