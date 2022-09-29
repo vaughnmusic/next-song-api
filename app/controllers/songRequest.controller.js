@@ -4,10 +4,9 @@ const db = require('../index');
 
 exports.createNewRequest = (req, res) => {
 
-    var { userId, songId, gigId } = req.body;
+    var { songId, gigId } = req.body;
 
-    if ((typeof userId !== 'string')
-        || (typeof songId !== 'string')
+    if ((typeof songId !== 'string')
         || (typeof gigId !== 'string')) {
         res.status(400).send({
             message: "You are missing required data",
@@ -18,23 +17,23 @@ exports.createNewRequest = (req, res) => {
 
     const script = `
         INSERT INTO next_song.song_requests
-            (user_id, song_id, gig_id)
+            (song_id, gig_id)
         VALUES
-            (?, ?, ?);
-    `
+            (?, ?);
+    `;
 
-    let pValues = [userId, songId, gigId]
+    let pValues = [songId, gigId]
 
     db.query(script, pValues, (err, results) => {
         if (err) {
             res.status(500).send({
-                message: 'There was a problem saving your ORM',
+                message: 'There was a problem submitting your song request',
                 err
             })
             return;
         } else {
             res.send({
-                message: 'Your one rep max was saved in the database'
+                message: 'Your song request was submitted!'
             })
             return;
         }
