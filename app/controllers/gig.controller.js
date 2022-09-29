@@ -58,6 +58,37 @@ exports.getGigById = (req, res) => {
     });
 }
 
+exports.getPerfomersGigs = (req, res) => {
+    // change this to get the right data 'gigs made by a performer'
+    let { gigId } = req.params;
+
+    const query = `
+        SELECT * FROM gigs
+        WHERE id = ?;
+    `;
+
+    let pValues = [gigId];
+
+
+    db.query(query, pValues, (err, results) => {
+
+        if (err) {
+            res.status(500).send({
+                error: err,
+                message: "There was a problem getting gigs"
+            });
+            return;
+        } else if (results.length == 0) {
+            res.status(404).send({
+                message: "No gigs found :("
+            });
+            return;
+        } else {
+            res.send(results[0]);
+        }
+    });
+}
+
 
 exports.createNewGig = (req, res) => {
 
