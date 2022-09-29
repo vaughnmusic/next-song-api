@@ -18,23 +18,23 @@ exports.createNewRequest = (req, res) => {
 
     const script = `
         INSERT INTO next_song.song_requests
-            (id, song_id, gig_id)
+            (song_id, gig_id)
         VALUES
-            (?, ?, ?);
-    `
+            (?, ?);
+    `;
 
-    let pValues = [uuid(), songId, gigId]
+    let pValues = [songId, gigId]
 
     db.query(script, pValues, (err, results) => {
         if (err) {
             res.status(500).send({
-                message: 'There was a problem saving your song request.',
+                message: 'There was a problem submitting your song request',
                 err
             })
             return;
         } else {
             res.send({
-                message: 'Your song request was saved in the database.'
+                message: 'Your song request was submitted!'
             })
             return;
         }
