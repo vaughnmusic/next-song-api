@@ -1,8 +1,6 @@
 const db = require('../index');
 const { v4: uuid } = require('uuid');
 
-// file needs to be updated to work for this application
-
 exports.createNewRequest = (req, res) => {
 
     var { songId, gigId } = req.body;
@@ -43,6 +41,46 @@ exports.createNewRequest = (req, res) => {
 
 // create a function to GET all requests for some gig
 // returns arr of data as response
+
+exports.getRequestsForGig = (req, res) => {
+    var { songId, gigId } = req.body;
+
+    if ((typeof songId !== 'string')
+        || (typeof gigId !== 'string')) {
+        res.status(400).send({
+            message: "You are missing required data",
+            body: req.body
+        })
+        return;
+    }
+
+    const query = `
+    SELECT * FROM next_song.song_requests
+    WHERE gig_id = ?;
+    `;
+
+    let pValues = [songId, gigId]
+
+    db.query(script, pValues, (err, results) => {
+        if (err) {
+            res.status(500).send({
+                message: 'There was a problem finding your song requests',
+                err
+            })
+            return;
+        } else {
+            res.send({
+                message: 'We have found your song requests!'
+            })
+            return;
+        }
+    })
+
+
+    // function getExerciseHistory(user_id, exercise_id) {
+    //     return axios.get(`${URL}/orms/user/${user_id}/exercise/${exercise_id}`)
+    // }
+}
 
 exports.deleteRequest = (req, res) => {
 
