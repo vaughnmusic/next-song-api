@@ -16,12 +16,12 @@ exports.createNewRequest = (req, res) => {
 
     const script = `
         INSERT INTO next_song.song_requests
-            (song_id, gig_id)
+            (id, song_id, gig_id)
         VALUES
-            (?, ?);
+            (?, ?, ?);
     `;
 
-    let pValues = [songId, gigId]
+    let pValues = [uuid(), songId, gigId]
 
     db.query(script, pValues, (err, results) => {
         if (err) {
@@ -43,23 +43,22 @@ exports.createNewRequest = (req, res) => {
 // returns arr of data as response
 
 exports.getRequestsForGig = (req, res) => {
-    var { songId, gigId } = req.body;
+    var { gigId } = req.params;
 
-    if ((typeof songId !== 'string')
-        || (typeof gigId !== 'string')) {
-        res.status(400).send({
-            message: "You are missing required data",
-            body: req.body
-        })
-        return;
-    }
+    // if ((typeof gigId !== 'string')) {
+    //     res.status(400).send({
+    //         message: "You are missing required data",
+    //         body: req.body
+    //     })
+    //     return;
+    // }
 
-    const query = `
+    const script = `
     SELECT * FROM next_song.song_requests
-    WHERE gig_id = ?;
+    WHERE (gig_id = ?);
     `;
 
-    let pValues = [songId, gigId]
+    let pValues = [gigId]
 
     db.query(script, pValues, (err, results) => {
         if (err) {
@@ -68,10 +67,14 @@ exports.getRequestsForGig = (req, res) => {
                 err
             })
             return;
-        } else {
-            res.send({
-                message: 'We have found your song requests!'
+        } else if ((results.length == 0)) {
+            res.status(400).send({
+                message: "gig not found",
+                body: req.body
             })
+            return;
+        } else {
+            res.send(results);
             return;
         }
     })
